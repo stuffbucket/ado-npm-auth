@@ -1,9 +1,11 @@
 import { spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 import { beforeEach, expect, test, vi } from "vitest";
 import { exec } from "../utils/exec.js";
 import * as utils from "../utils/is-wsl.js";
 import type { AdoPatResponse } from "./ado.js";
 import { adoPat } from "./ado.js";
+import { clearMemo } from "./azureauth-command.js";
 
 vi.mock("child_process", async () => {
   return {
@@ -40,6 +42,7 @@ vi.mock("./is-supported-platform-and-architecture.js", async () => {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  clearMemo();
 });
 
 test("it should spawn azureauth", async () => {
@@ -61,8 +64,11 @@ test("it should spawn azureauth", async () => {
     timeout: "200",
   })) as AdoPatResponse;
 
+  const require = createRequire(import.meta.url);
   expect(exec).toHaveBeenCalledWith(
-    'npm exec --silent --yes azureauth -- ado pat --prompt-hint "hint" --organization org --display-name test display --scope foobar --output json --domain baz.com --timeout 200',
+    `${JSON.stringify(process.execPath)} ${JSON.stringify(
+      require.resolve("azureauth/scripts/azureauth.cjs"),
+    )} ado pat --prompt-hint "hint" --organization org --display-name test display --scope foobar --output json --domain baz.com --timeout 200`,
     expect.anything(),
   );
   expect(results.token).toBe("foobarabc123");
@@ -86,13 +92,8 @@ test("it should spawnSync azureauth on wsl", async () => {
   })) as AdoPatResponse;
 
   expect(spawnSync).toHaveBeenCalledWith(
-    "npm",
+    "azureauth.exe",
     [
-      "exec",
-      "--silent",
-      "--yes",
-      "azureauth",
-      "--",
       "ado",
       "pat",
       "--prompt-hint hint",
@@ -195,5 +196,5 @@ test("it should handle errors from azureauth-cli", async () => {
       domain: "baz.com",
       timeout: "200",
     }),
-  ).rejects.toThrowError("Failed to get Ado Pat from npx AzureAuth: an error");
+  ).rejects.toThrowError("Failed to get Ado Pat from AzureAuth: an error");
 });

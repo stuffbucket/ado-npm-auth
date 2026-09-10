@@ -1,0 +1,18 @@
+{
+  "changes": [
+    {
+      "type": "patch",
+      "comment": "Use the installed AzureAuth package without forcing a public registry",
+      "packageName": "@microsoft/ado-npm-auth-lib",
+      "email": "231133237+stuffbucket@users.noreply.github.com",
+      "dependentChangeType": "patch"
+    },
+    {
+      "type": "patch",
+      "comment": "Use the installed AzureAuth package without forcing a public registry",
+      "packageName": "ado-npm-auth",
+      "email": "231133237+stuffbucket@users.noreply.github.com",
+      "dependentChangeType": "patch"
+    }
+  ]
+}

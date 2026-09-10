@@ -100,7 +100,7 @@ export const adoPat = async (
         }
       } catch (error: any) {
         throw new Error(
-          `Failed to get Ado Pat from npx AzureAuth: ${error.message}`,
+          `Failed to get Ado Pat from AzureAuth: ${error.message}`,
         );
       }
     }
